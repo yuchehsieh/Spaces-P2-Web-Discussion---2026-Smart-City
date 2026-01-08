@@ -173,7 +173,7 @@ const App: React.FC = () => {
                />
             </div>
             <span className="ml-3 text-sm text-blue-200 font-medium tracking-wide opacity-80 border-l border-blue-400/30 pl-3">
-              Security Dashboard Draft
+              Security Dashboard Draft (2026 Smart City)
             </span>
          </div>
 
