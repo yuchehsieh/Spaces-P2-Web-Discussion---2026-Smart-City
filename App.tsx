@@ -274,7 +274,7 @@ const App: React.FC = () => {
             />
           </>
         ) : (
-          <div className="flex-1 flex overflow-hidden">
+          <div className="flex-1 flex overflow-hidden relative">
              {activeNav === 'playback-center' ? (
                 <PlaybackTab />
              ) : activeNav === 'setting-center' ? (

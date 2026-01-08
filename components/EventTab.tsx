@@ -197,6 +197,9 @@ const EventTab: React.FC<EventTabProps> = ({ initialSubTab = 'list' }) => {
     }, 1000);
   };
 
+  // 展覽模式：僅允許顯示「歷史事件紀錄」
+  const allowedSubNavs: EventSubNavType[] = ['list'];
+
   return (
     <div className="flex h-full w-full bg-[#050914] text-slate-200 overflow-hidden relative">
       <div className="w-64 border-r border-slate-800 bg-[#0b1121] flex flex-col shrink-0 p-6">
@@ -213,16 +216,23 @@ const EventTab: React.FC<EventTabProps> = ({ initialSubTab = 'list' }) => {
             { id: 'list', label: '歷史事件紀錄', icon: <LayoutList size={18} />, desc: 'Logs & History' },
             { id: 'settings', label: '情境管理', icon: <Settings2 size={18} />, desc: 'Custom Scenarios' },
             { id: 'security-schedule', label: '保全排程管理', icon: <CalendarClock size={18} />, desc: 'System Scheduling' },
-          ].map(item => (
-            <button key={item.id} onClick={() => { setActiveSubNav(item.id as EventSubNavType); setModalContent(null); }} className={`w-full flex items-start gap-4 px-4 py-4 rounded-2xl transition-all duration-300 border ${activeSubNav === item.id ? 'bg-blue-600 border-blue-500 text-white shadow-xl' : 'bg-transparent border-transparent text-slate-500 hover:bg-slate-800/50'}`}>
-              <div className={`mt-0.5 p-2 rounded-xl ${activeSubNav === item.id ? 'bg-white/20' : 'bg-slate-800 text-slate-400'}`}>{item.icon}</div>
-              <div className="text-left"><div className="text-sm font-bold">{item.label}</div><div className="text-[10px] opacity-60">{item.desc}</div></div>
-            </button>
-          ))}
+          ].map(item => {
+            // 展覽屏蔽：不渲染非允許的入口
+            if (!allowedSubNavs.includes(item.id as EventSubNavType)) return null;
+
+            return (
+              <button key={item.id} onClick={() => { setActiveSubNav(item.id as EventSubNavType); setModalContent(null); }} className={`w-full flex items-start gap-4 px-4 py-4 rounded-2xl transition-all duration-300 border relative ${activeSubNav === item.id ? 'bg-blue-600 border-blue-500 text-white shadow-xl' : 'bg-transparent border-transparent text-slate-500 hover:bg-slate-800/50'}`}>
+                <div className={`mt-0.5 p-2 rounded-xl relative ${activeSubNav === item.id ? 'bg-white/20' : 'bg-slate-800 text-slate-400'}`}>
+                  {item.icon}
+                </div>
+                <div className="text-left"><div className="text-sm font-bold">{item.label}</div><div className="text-[10px] opacity-60">{item.desc}</div></div>
+              </button>
+            );
+          })}
         </nav>
       </div>
 
-      <div className="flex-1 overflow-y-auto custom-scrollbar bg-[#050914] p-10">
+      <div className="flex-1 overflow-y-auto custom-scrollbar bg-[#050914] p-10 relative">
         {activeSubNav === 'list' && (
           <div className="max-w-[1500px] mx-auto animate-in fade-in slide-in-from-right-4 duration-500">
              <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-6 mb-10 pb-8 border-b border-slate-800/50">
@@ -329,8 +339,12 @@ const EventTab: React.FC<EventTabProps> = ({ initialSubTab = 'list' }) => {
              </div>
           </div>
         )}
-        {activeSubNav === 'settings' && <EventManagementView />}
-        {activeSubNav === 'security-schedule' && <SecurityScheduleManager />}
+        {activeSubNav === 'settings' && (
+          <EventManagementView />
+        )}
+        {activeSubNav === 'security-schedule' && (
+          <SecurityScheduleManager />
+        )}
       </div>
 
       {/* 處置案件彈窗 - 與安防中心一致 */}
